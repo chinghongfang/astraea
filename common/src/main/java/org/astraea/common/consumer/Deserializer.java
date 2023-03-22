@@ -16,8 +16,11 @@
  */
 package org.astraea.common.consumer;
 
+import java.nio.ByteBuffer;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.DoubleDeserializer;
@@ -26,8 +29,10 @@ import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.astraea.common.Header;
+import org.astraea.common.backup.ByteUtils;
 import org.astraea.common.json.JsonConverter;
 import org.astraea.common.json.TypeRef;
+import org.astraea.common.metrics.BeanObject;
 
 @FunctionalInterface
 public interface Deserializer<T> {
@@ -98,6 +103,65 @@ public interface Deserializer<T> {
       else {
         return jackson.fromJson(Deserializer.STRING.deserialize(topic, headers, data), typeRef);
       }
+    }
+  }
+
+  class BeanDeserializer implements Deserializer<BeanObject> {
+    @Override
+    public BeanObject deserialize(String topic, List<Header> headers, byte[] data) {
+      var byteBuffer = ByteBuffer.wrap(data);
+
+      final short domainNameLen = byteBuffer.getShort();
+      var domainName = ByteUtils.readString(byteBuffer, domainNameLen);
+
+      final int propertiesSize = byteBuffer.get();
+      Map<String, String> properties = new HashMap<>();
+      for (int i = 0; i < propertiesSize; ++i) {
+        final short keyLen = byteBuffer.getShort();
+        var key = ByteUtils.readString(byteBuffer, keyLen);
+        final short valueLen = byteBuffer.getShort();
+        var value = ByteUtils.readString(byteBuffer, valueLen);
+        properties.put(key, value);
+      }
+
+      final int attributesSize = byteBuffer.get();
+      Map<String, Object> attributes = new HashMap<>();
+      for (int i = 0; i < attributesSize; ++i) {
+        final short keyLen = byteBuffer.getShort();
+        var key = ByteUtils.readString(byteBuffer, keyLen);
+        final byte type = byteBuffer.get();
+        switch (type) {
+          case 1:
+            attributes.put(key, byteBuffer.get());
+            break;
+          case 2:
+            attributes.put(key, byteBuffer.getShort());
+            break;
+          case 3:
+            attributes.put(key, byteBuffer.getInt());
+            break;
+          case 4:
+            attributes.put(key, byteBuffer.getLong());
+            break;
+          case 5:
+            attributes.put(key, byteBuffer.getFloat());
+            break;
+          case 6:
+            attributes.put(key, byteBuffer.getDouble());
+            break;
+          case 7:
+            attributes.put(key, byteBuffer.get() != 0x00);
+            break;
+          case 8:
+            attributes.put(key, byteBuffer.getChar());
+            break;
+          case 9:
+            var strLen = byteBuffer.getShort();
+            attributes.put(key, ByteUtils.readString(byteBuffer, strLen));
+            break;
+        }
+      }
+      return new BeanObject(domainName, properties, attributes);
     }
   }
 }

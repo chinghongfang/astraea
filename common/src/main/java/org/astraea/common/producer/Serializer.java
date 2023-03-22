@@ -104,7 +104,6 @@ public interface Serializer<T> {
    *
    * <p>Serialize the map. If the key or value in map is not java primitive type, convert it to
    * string and then convert it to byte array.
-   *
    */
   class BeanSerializer implements Serializer<BeanObject> {
     @Override
@@ -119,11 +118,8 @@ public interface Serializer<T> {
               .mapToInt(e -> 2 + e.getKey().getBytes().length + 1 + primitiveLen(e.getValue()))
               .sum();
 
-      final int size = 2 + data.domainName().getBytes().length
-              + 1
-              + propertiesLen
-              + 1
-              + attributesLen;
+      final int size =
+          2 + data.domainName().getBytes().length + 1 + propertiesLen + 1 + attributesLen;
       var byteBuffer = ByteBuffer.allocate(size);
 
       // Serialize the domain name
@@ -132,10 +128,12 @@ public interface Serializer<T> {
       // Serialize the properties
       // The number of key-value pair (<= 127)
       byteBuffer.put((byte) data.properties().entrySet().size());
-      data.properties().forEach((key, value) -> {
-        ByteUtils.putLengthString(byteBuffer, key);
-        ByteUtils.putLengthString(byteBuffer, value);
-      });
+      data.properties()
+          .forEach(
+              (key, value) -> {
+                ByteUtils.putLengthString(byteBuffer, key);
+                ByteUtils.putLengthString(byteBuffer, value);
+              });
 
       /*
        * Serialize the attributes. The type of BeanObject attribute
@@ -143,41 +141,43 @@ public interface Serializer<T> {
        * the type of attribute "meanRate" is double.
        */
       byteBuffer.put((byte) data.attributes().entrySet().size());
-      data.attributes().forEach((key, value) -> {
-        ByteUtils.putLengthString(byteBuffer, key);
-        final byte type = primitiveId(value);
-        byteBuffer.put(type);
-        switch (type) {
-          case 1:
-          case 8:
-            byteBuffer.put((byte) value);
-            break;
-          case 2:
-            byteBuffer.put(ByteUtils.toBytes((short)value));
-            break;
-          case 3:
-            byteBuffer.put(ByteUtils.toBytes((int)value));
-            break;
-          case 4:
-            byteBuffer.put(ByteUtils.toBytes((long)value));
-            break;
-          case 5:
-            byteBuffer.put(ByteUtils.toBytes((float)value));
-            break;
-          case 6:
-            byteBuffer.put(ByteUtils.toBytes((double) value));
-            break;
-          case 7:
-            byteBuffer.put(ByteUtils.toBytes((boolean) value));
-          default:
-            ByteUtils.putLengthString(byteBuffer, value.toString());
-        }
-      });
+      data.attributes()
+          .forEach(
+              (key, value) -> {
+                ByteUtils.putLengthString(byteBuffer, key);
+                final byte type = primitiveId(value);
+                byteBuffer.put(type);
+                switch (type) {
+                  case 1:
+                  case 8:
+                    byteBuffer.put((byte) value);
+                    break;
+                  case 2:
+                    byteBuffer.put(ByteUtils.toBytes((short) value));
+                    break;
+                  case 3:
+                    byteBuffer.put(ByteUtils.toBytes((int) value));
+                    break;
+                  case 4:
+                    byteBuffer.put(ByteUtils.toBytes((long) value));
+                    break;
+                  case 5:
+                    byteBuffer.put(ByteUtils.toBytes((float) value));
+                    break;
+                  case 6:
+                    byteBuffer.put(ByteUtils.toBytes((double) value));
+                    break;
+                  case 7:
+                    byteBuffer.put(ByteUtils.toBytes((boolean) value));
+                  default:
+                    ByteUtils.putLengthString(byteBuffer, value.toString());
+                }
+              });
 
       return byteBuffer.array();
     }
 
-    /** Convert given primitive to length in byte-array expression*/
+    /** Convert given primitive to length in byte-array expression */
     private int primitiveLen(Object value) {
       if (value.getClass().equals(Byte.class)) {
         return 1;
