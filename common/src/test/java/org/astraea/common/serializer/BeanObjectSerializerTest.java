@@ -28,16 +28,18 @@ public class BeanObjectSerializerTest {
   void testing() throws IOException {
     var bean = new BeanObject("topicA", Map.of("name", "publisher"), Map.of("value", "3"));
 
-    var builder = BeanObjectOuterClass.BeanObject.newBuilder().setTopic(bean.domainName());
-    bean.properties().forEach((key, val) -> builder.addProperties(property(key, val)));
-    bean.attributes().forEach((key, val) -> builder.addAttributes(attribute(key, val)));
-    var beanOuter = builder.build();
-
     var os = new ByteArrayOutputStream();
-    beanOuter.writeTo(os);
+    var start = System.currentTimeMillis();
+    for (int i = 0; i<100_000_000; ++i) {
+      os.reset();
+      var builder = BeanObjectOuterClass.BeanObject.newBuilder().setTopic(bean.domainName());
+      bean.properties().forEach((key, val) -> builder.addProperties(property(key, val)));
+      bean.attributes().forEach((key, val) -> builder.addAttributes(attribute(key, val)));
+      var beanOuter = builder.build();
 
-    var byteArr = os.toByteArray();
-    System.out.println("  serialized size: " + byteArr.length + " bytes");
+      beanOuter.writeTo(os);
+    }
+    System.out.println("  serialize time: "+ (System.currentTimeMillis() - start)+" ms");
   }
 
   private BeanObjectOuterClass.BeanObject.Property property(String k, String v) {
