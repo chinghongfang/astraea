@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package org.astraea.common;
+
+message BeanObject {
+  string topic = 1;
+  repeated Property properties = 2;
+  repeated Attribute attributes = 3;
+
+  message Property{
+    string key = 1;
+    string value = 2;
+  }
+  message Attribute{
+    string key = 1;
+    Primitive obj = 2;
+  }
+  message Primitive {
+    oneof value {
+      string str = 1;
+      int32 int = 2;
+      int64 long = 3;
+      float float = 4;
+      double double = 5;
+      bool boolean = 6;
+    }
+  }
+}
