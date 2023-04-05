@@ -80,7 +80,7 @@ public class BeanObjectSerializerTest {
 
   @Test
   void testBeanSize(){
-    var bean = new BeanObject("topicA", Map.of("name", "publisher"), Map.of("value", "3"));
+    var bean = new BeanObject("topicA", Map.of("name", "publisher"), Map.of("count", 3, "mean", 2.4));
     var serializer = new Serializer.BeanSerializer();
     var deserializer = new Deserializer.BeanDeserializer();
     //List<byte[]> trash = new ArrayList<>(1000);
