@@ -1,9 +1,17 @@
-{"namespace": "org.astraea.common",
+{"namespace": "org.astraea.common.producer",
   "type": "record",
   "name": "Bean",
   "fields": [
     {"name": "domain", "type": "string"},
-    {"name": "favorite_number",  "type": ["int", "null"]},
-    {"name": "favorite_color", "type": ["string", "null"]}
+    {"name": "properties",  "type":
+    {"type":  "map",
+      "values": "string",
+      "default": {}
+    }},
+    {"name": "attributes", "type":
+    {"type":  "map",
+      "values": ["string", "int", "long", "null", "float", "double", "boolean"],
+      "default": {}
+    }}
   ]
 }
