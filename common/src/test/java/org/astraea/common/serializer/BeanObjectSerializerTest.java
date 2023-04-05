@@ -19,6 +19,8 @@ package org.astraea.common.serializer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.astraea.common.consumer.Deserializer;
 import org.astraea.common.metrics.BeanObject;
 import org.astraea.common.producer.Serializer;
 import org.junit.jupiter.api.Assertions;
@@ -80,14 +82,14 @@ public class BeanObjectSerializerTest {
   void testBeanSize(){
     var bean = new BeanObject("topicA", Map.of("name", "publisher"), Map.of("value", "3"));
     var serializer = new Serializer.BeanSerializer();
-    List<byte[]> trash = new ArrayList<>(1000);
+    var deserializer = new Deserializer.BeanDeserializer();
+    //List<byte[]> trash = new ArrayList<>(1000);
 
     var start = System.currentTimeMillis();
-    for (int i = 0; i<100_000; ++i){
-      for (int j = 0; j<1_000; ++j){
-        trash.add(serializer.serialize("", List.of(), bean));
-      }
-      trash.clear();
+    for (int i = 0; i<100_000_000; ++i){
+      var bytes = serializer.serialize("", List.of(), bean);
+      var deserialized = deserializer.deserialize("", List.of(), bytes);
+      Assertions.assertEquals(bean.domainName(), deserialized.domainName());
     }
 
     System.out.println("  serialize time: "+ (System.currentTimeMillis() - start) );
