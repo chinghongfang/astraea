@@ -27,7 +27,6 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.astraea.common.Utils;
 import org.astraea.common.producer.Bean;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,8 @@ public class BeanObjectSerializerTest {
   @Test
   void testing() throws IOException {
     String domain = "topicA";
-    Map<CharSequence, CharSequence> properties = new HashMap<>(Map.of("name", "publisher"));
-    Map<CharSequence, Object> attributes = new HashMap<>(Map.of("count", 3, "mean", 2.4));
+    var properties = new HashMap<>(Map.of("name", "publisher"));
+    Map<String, Object> attributes = new HashMap<>(Map.of("count", 3, "mean", 2.4));
 
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(os, null);
@@ -59,7 +58,7 @@ public class BeanObjectSerializerTest {
 
       Decoder decoder = DecoderFactory.get().binaryDecoder(bytes, null);
       Bean deserialized = reader.read(null, decoder);
-      Assertions.assertEquals(domain, deserialized.getDomain().toString());
+      Assertions.assertEquals(domain, deserialized.getDomain());
     }
     System.out.println("  serialize time: " + (System.currentTimeMillis() - start) + " ms");
   }

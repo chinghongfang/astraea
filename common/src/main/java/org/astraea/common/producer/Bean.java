@@ -29,7 +29,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
   public static final org.apache.avro.Schema SCHEMA$ =
       new org.apache.avro.Schema.Parser()
           .parse(
-              "{\"type\":\"record\",\"name\":\"Bean\",\"namespace\":\"org.example\",\"fields\":[{\"name\":\"domain\",\"type\":\"string\"},{\"name\":\"properties\",\"type\":{\"type\":\"map\",\"values\":\"string\",\"default\":{}}},{\"name\":\"attributes\",\"type\":{\"type\":\"map\",\"values\":[\"string\",\"int\",\"long\",\"null\",\"float\",\"double\",\"boolean\"],\"default\":{}}}]}");
+              "{\"type\":\"record\",\"name\":\"Bean\",\"namespace\":\"org.astraea.common.producer\",\"fields\":[{\"name\":\"domain\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"properties\",\"type\":{\"type\":\"map\",\"values\":{\"type\":\"string\",\"avro.java.string\":\"String\"},\"avro.java.string\":\"String\",\"default\":{}}},{\"name\":\"attributes\",\"type\":{\"type\":\"map\",\"values\":[{\"type\":\"string\",\"avro.java.string\":\"String\"},\"int\",\"long\",\"null\",\"float\",\"double\",\"boolean\"],\"avro.java.string\":\"String\",\"default\":{}}}]}");
 
   public static org.apache.avro.Schema getClassSchema() {
     return SCHEMA$;
@@ -94,9 +94,9 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
     return DECODER.decode(b);
   }
 
-  private java.lang.CharSequence domain;
-  private java.util.Map<java.lang.CharSequence, java.lang.CharSequence> properties;
-  private java.util.Map<java.lang.CharSequence, java.lang.Object> attributes;
+  private java.lang.String domain;
+  private java.util.Map<java.lang.String, java.lang.String> properties;
+  private java.util.Map<java.lang.String, java.lang.Object> attributes;
 
   /**
    * Default constructor. Note that this does not initialize fields to their default values from the
@@ -112,9 +112,9 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
    * @param attributes The new value for attributes
    */
   public Bean(
-      java.lang.CharSequence domain,
-      java.util.Map<java.lang.CharSequence, java.lang.CharSequence> properties,
-      java.util.Map<java.lang.CharSequence, java.lang.Object> attributes) {
+      java.lang.String domain,
+      java.util.Map<java.lang.String, java.lang.String> properties,
+      java.util.Map<java.lang.String, java.lang.Object> attributes) {
     this.domain = domain;
     this.properties = properties;
     this.attributes = attributes;
@@ -151,13 +151,13 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
       case 0:
-        domain = (java.lang.CharSequence) value$;
+        domain = value$ != null ? value$.toString() : null;
         break;
       case 1:
-        properties = (java.util.Map<java.lang.CharSequence, java.lang.CharSequence>) value$;
+        properties = (java.util.Map<java.lang.String, java.lang.String>) value$;
         break;
       case 2:
-        attributes = (java.util.Map<java.lang.CharSequence, java.lang.Object>) value$;
+        attributes = (java.util.Map<java.lang.String, java.lang.Object>) value$;
         break;
       default:
         throw new IndexOutOfBoundsException("Invalid index: " + field$);
@@ -169,7 +169,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
    *
    * @return The value of the 'domain' field.
    */
-  public java.lang.CharSequence getDomain() {
+  public java.lang.String getDomain() {
     return domain;
   }
 
@@ -178,7 +178,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
    *
    * @param value the value to set.
    */
-  public void setDomain(java.lang.CharSequence value) {
+  public void setDomain(java.lang.String value) {
     this.domain = value;
   }
 
@@ -187,7 +187,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
    *
    * @return The value of the 'properties' field.
    */
-  public java.util.Map<java.lang.CharSequence, java.lang.CharSequence> getProperties() {
+  public java.util.Map<java.lang.String, java.lang.String> getProperties() {
     return properties;
   }
 
@@ -196,7 +196,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
    *
    * @param value the value to set.
    */
-  public void setProperties(java.util.Map<java.lang.CharSequence, java.lang.CharSequence> value) {
+  public void setProperties(java.util.Map<java.lang.String, java.lang.String> value) {
     this.properties = value;
   }
 
@@ -205,7 +205,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
    *
    * @return The value of the 'attributes' field.
    */
-  public java.util.Map<java.lang.CharSequence, java.lang.Object> getAttributes() {
+  public java.util.Map<java.lang.String, java.lang.Object> getAttributes() {
     return attributes;
   }
 
@@ -214,7 +214,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
    *
    * @param value the value to set.
    */
-  public void setAttributes(java.util.Map<java.lang.CharSequence, java.lang.Object> value) {
+  public void setAttributes(java.util.Map<java.lang.String, java.lang.Object> value) {
     this.attributes = value;
   }
 
@@ -262,9 +262,9 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Bean>
       implements org.apache.avro.data.RecordBuilder<Bean> {
 
-    private java.lang.CharSequence domain;
-    private java.util.Map<java.lang.CharSequence, java.lang.CharSequence> properties;
-    private java.util.Map<java.lang.CharSequence, java.lang.Object> attributes;
+    private java.lang.String domain;
+    private java.util.Map<java.lang.String, java.lang.String> properties;
+    private java.util.Map<java.lang.String, java.lang.Object> attributes;
 
     /** Creates a new Builder */
     private Builder() {
@@ -318,7 +318,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
      *
      * @return The value.
      */
-    public java.lang.CharSequence getDomain() {
+    public java.lang.String getDomain() {
       return domain;
     }
 
@@ -328,7 +328,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
      * @param value The value of 'domain'.
      * @return This builder.
      */
-    public org.astraea.common.producer.Bean.Builder setDomain(java.lang.CharSequence value) {
+    public org.astraea.common.producer.Bean.Builder setDomain(java.lang.String value) {
       validate(fields()[0], value);
       this.domain = value;
       fieldSetFlags()[0] = true;
@@ -360,7 +360,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
      *
      * @return The value.
      */
-    public java.util.Map<java.lang.CharSequence, java.lang.CharSequence> getProperties() {
+    public java.util.Map<java.lang.String, java.lang.String> getProperties() {
       return properties;
     }
 
@@ -371,7 +371,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
      * @return This builder.
      */
     public org.astraea.common.producer.Bean.Builder setProperties(
-        java.util.Map<java.lang.CharSequence, java.lang.CharSequence> value) {
+        java.util.Map<java.lang.String, java.lang.String> value) {
       validate(fields()[1], value);
       this.properties = value;
       fieldSetFlags()[1] = true;
@@ -403,7 +403,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
      *
      * @return The value.
      */
-    public java.util.Map<java.lang.CharSequence, java.lang.Object> getAttributes() {
+    public java.util.Map<java.lang.String, java.lang.Object> getAttributes() {
       return attributes;
     }
 
@@ -414,7 +414,7 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
      * @return This builder.
      */
     public org.astraea.common.producer.Bean.Builder setAttributes(
-        java.util.Map<java.lang.CharSequence, java.lang.Object> value) {
+        java.util.Map<java.lang.String, java.lang.Object> value) {
       validate(fields()[2], value);
       this.attributes = value;
       fieldSetFlags()[2] = true;
@@ -447,17 +447,15 @@ public class Bean extends org.apache.avro.specific.SpecificRecordBase
       try {
         Bean record = new Bean();
         record.domain =
-            fieldSetFlags()[0] ? this.domain : (java.lang.CharSequence) defaultValue(fields()[0]);
+            fieldSetFlags()[0] ? this.domain : (java.lang.String) defaultValue(fields()[0]);
         record.properties =
             fieldSetFlags()[1]
                 ? this.properties
-                : (java.util.Map<java.lang.CharSequence, java.lang.CharSequence>)
-                    defaultValue(fields()[1]);
+                : (java.util.Map<java.lang.String, java.lang.String>) defaultValue(fields()[1]);
         record.attributes =
             fieldSetFlags()[2]
                 ? this.attributes
-                : (java.util.Map<java.lang.CharSequence, java.lang.Object>)
-                    defaultValue(fields()[2]);
+                : (java.util.Map<java.lang.String, java.lang.Object>) defaultValue(fields()[2]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;
