@@ -37,7 +37,7 @@ public class BeanObjectSerializerTest {
   void testing() throws IOException {
     String domain = "topicA";
     Map<CharSequence, CharSequence> properties = new HashMap<>(Map.of("name", "publisher"));
-    Map<CharSequence, Object> attributes = new HashMap<>(Map.of("value", "3"));
+    Map<CharSequence, Object> attributes = new HashMap<>(Map.of("count", 3, "mean", 2.4));
 
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(os, null);
