@@ -23,6 +23,7 @@ import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
+import org.astraea.common.Utils;
 import org.astraea.common.producer.Bean;
 import org.junit.jupiter.api.Test;
 
@@ -36,18 +37,21 @@ public class BeanObjectSerializerTest {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(os, null);
     DatumWriter<Bean> beanWriter = new SpecificDatumWriter<>(Bean.class);
+    // List<byte[]> trash = new ArrayList<>(1000);
 
     long start = System.currentTimeMillis();
-    for (int i = 0; i < 100_000_000; ++i) {
+    //for (int i = 0; i < 100_000_000; ++i) {
       os.reset();
-      Bean.Builder builder = Bean.newBuilder().setDomain(domain);
+      Bean.Builder builder = Bean.newBuilder().setDomain(Utils.randomString(5));
       builder.setProperties(properties);
       builder.setAttributes(attributes);
       Bean bean = builder.build();
 
       beanWriter.write(bean, encoder);
       encoder.flush();
-    }
+    //}
+    var bytes = os.toByteArray();
     System.out.println("  serialize time: " + (System.currentTimeMillis() - start) + " ms");
+    System.out.println("  serialized size: "+ bytes.length);
   }
 }
