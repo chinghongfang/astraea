@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Map;
 import org.astraea.common.BeanObjectOuterClass;
 import org.astraea.common.metrics.BeanObject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class BeanObjectSerializerTest {
@@ -38,6 +39,9 @@ public class BeanObjectSerializerTest {
       var beanOuter = builder.build();
 
       beanOuter.writeTo(os);
+
+      var deserialized = BeanObjectOuterClass.BeanObject.parseFrom(os.toByteArray());
+      Assertions.assertEquals(bean.domainName(), deserialized.getTopic());
     }
     System.out.println("  serialize time: " + (System.currentTimeMillis() - start) + " ms");
   }
