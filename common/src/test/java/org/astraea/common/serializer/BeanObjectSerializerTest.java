@@ -30,7 +30,7 @@ public class BeanObjectSerializerTest {
 
     var os = new ByteArrayOutputStream();
     var start = System.currentTimeMillis();
-    for (int i = 0; i<100_000_000; ++i) {
+    for (int i = 0; i < 100_000_000; ++i) {
       os.reset();
       var builder = BeanObjectOuterClass.BeanObject.newBuilder().setTopic(bean.domainName());
       bean.properties().forEach((key, val) -> builder.addProperties(property(key, val)));
@@ -39,7 +39,7 @@ public class BeanObjectSerializerTest {
 
       beanOuter.writeTo(os);
     }
-    System.out.println("  serialize time: "+ (System.currentTimeMillis() - start)+" ms");
+    System.out.println("  serialize time: " + (System.currentTimeMillis() - start) + " ms");
   }
 
   private BeanObjectOuterClass.BeanObject.Property property(String k, String v) {
