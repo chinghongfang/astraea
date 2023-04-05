@@ -27,15 +27,16 @@ import org.junit.jupiter.api.Test;
 public class BeanObjectSerializerTest {
   @Test
   void testing() throws IOException {
-    var bean = new BeanObject("topicA", Map.of("name", "publisher"), Map.of("value", "3"));
+    var bean =
+        new BeanObject("topicA", Map.of("name", "publisher"), Map.of("count", 3, "mean", 2.4));
 
     var os = new ByteArrayOutputStream();
     var start = System.currentTimeMillis();
     for (int i = 0; i < 100_000_000; ++i) {
       os.reset();
       var builder = BeanObjectOuterClass.BeanObject.newBuilder().setTopic(bean.domainName());
-      bean.properties().forEach((key, val) -> builder.addProperties(property(key, val)));
-      bean.attributes().forEach((key, val) -> builder.addAttributes(attribute(key, val)));
+      builder.putAllProperties(bean.properties());
+      bean.attributes().forEach((key, val) -> builder.putAttributes(key, attribute(val)));
       var beanOuter = builder.build();
 
       beanOuter.writeTo(os);
@@ -46,42 +47,25 @@ public class BeanObjectSerializerTest {
     System.out.println("  serialize time: " + (System.currentTimeMillis() - start) + " ms");
   }
 
-  private BeanObjectOuterClass.BeanObject.Property property(String k, String v) {
-    return BeanObjectOuterClass.BeanObject.Property.newBuilder().setKey(k).setValue(v).build();
-  }
-
-  private BeanObjectOuterClass.BeanObject.Attribute attribute(String k, Object v) {
-    var tmpBuilder = BeanObjectOuterClass.BeanObject.Attribute.newBuilder().setKey(k);
+  private BeanObjectOuterClass.BeanObject.Primitive attribute(Object v) {
     if (v instanceof Integer) {
-      return tmpBuilder
-          .setObj(BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setInt((int) v).build())
-          .build();
+      return BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setInt((int) v).build();
     } else if (v instanceof Long) {
-      return tmpBuilder
-          .setObj(BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setLong((long) v).build())
-          .build();
+      return BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setLong((long) v).build();
     } else if (v instanceof Float) {
-      return tmpBuilder
-          .setObj(
-              BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setFloat((float) v).build())
-          .build();
+      return
+              BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setFloat((float) v).build();
     } else if (v instanceof Double) {
-      return tmpBuilder
-          .setObj(
-              BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setDouble((double) v).build())
-          .build();
+      return
+              BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setDouble((double) v).build();
     } else if (v instanceof Boolean) {
-      return tmpBuilder
-          .setObj(
+      return
               BeanObjectOuterClass.BeanObject.Primitive.newBuilder()
                   .setBoolean((boolean) v)
-                  .build())
-          .build();
+                  .build();
     } else {
-      return tmpBuilder
-          .setObj(
-              BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setStr(v.toString()).build())
-          .build();
+      return
+              BeanObjectOuterClass.BeanObject.Primitive.newBuilder().setStr(v.toString()).build();
     }
   }
 }
