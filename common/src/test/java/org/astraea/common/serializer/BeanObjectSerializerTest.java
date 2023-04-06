@@ -41,7 +41,6 @@ public class BeanObjectSerializerTest {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(os, null);
     DatumWriter<Bean> beanWriter = new SpecificDatumWriter<>(Bean.class);
-    // List<byte[]> trash = new ArrayList<>(1000);
     var reader = new SpecificDatumReader<>(Bean.class);
 
     long start = System.currentTimeMillis();
