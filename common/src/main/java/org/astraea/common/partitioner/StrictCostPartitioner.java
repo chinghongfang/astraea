@@ -155,11 +155,19 @@ public class StrictCostPartitioner extends Partitioner {
                       return Collections.unmodifiableMap(map);
                     });
 
-    metricStore =
-        MetricStore.builder()
-            .localReceiver(clientSupplier)
-            .sensorsSupplier(() -> Map.of(this.costFunction.metricSensor(), (integer, e) -> {}))
-            .build();
+    if (config.string("collector").equals(Optional.of("internal"))) {
+      metricStore =
+          MetricStore.builder()
+              .sensorsSupplier(() -> Map.of(this.costFunction.metricSensor(), (integer, e) -> {}))
+              .topicReceiver(config.requireString("bootstrap.servers"))
+              .build();
+    } else {
+      metricStore =
+          MetricStore.builder()
+              .localReceiver(clientSupplier)
+              .sensorsSupplier(() -> Map.of(this.costFunction.metricSensor(), (integer, e) -> {}))
+              .build();
+    }
     this.roundRobinKeeper = RoundRobinKeeper.of(ROUND_ROBIN_LENGTH, roundRobinLease);
   }
 
