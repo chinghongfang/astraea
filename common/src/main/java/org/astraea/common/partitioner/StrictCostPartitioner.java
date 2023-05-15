@@ -19,9 +19,11 @@ package org.astraea.common.partitioner;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -158,13 +160,17 @@ public class StrictCostPartitioner extends Partitioner {
     if (config.string("collector").equals(Optional.of("internal"))) {
       metricStore =
           MetricStore.builder()
+              .receivers(
+                  List.of(
+                      MetricStore.Receiver.local(
+                          () -> CompletableFuture.completedStage(Map.of(-1, JndiClient.local()))),
+                      MetricStore.Receiver.topic(config.requireString("bootstrap.servers"))))
               .sensorsSupplier(() -> Map.of(this.costFunction.metricSensor(), (integer, e) -> {}))
-              .topicReceiver(config.requireString("bootstrap.servers"))
               .build();
     } else {
       metricStore =
           MetricStore.builder()
-              .localReceiver(clientSupplier)
+              .receivers(List.of(MetricStore.Receiver.local(clientSupplier)))
               .sensorsSupplier(() -> Map.of(this.costFunction.metricSensor(), (integer, e) -> {}))
               .build();
     }
