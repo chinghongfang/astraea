@@ -68,7 +68,10 @@ public class WebService implements AutoCloseable {
     var metricStore =
         MetricStore.builder()
             .beanExpiration(beanExpiration)
-            .receivers(List.of(MetricStore.Receiver.local(clientSupplier)))
+            .receivers(
+                List.of(
+                    MetricStore.Receiver.topic(
+                        admin.bootstrapServers().toCompletableFuture().join())))
             .sensorsSupplier(
                 () ->
                     sensors.metricSensors().stream()
