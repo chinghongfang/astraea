@@ -129,7 +129,7 @@ public interface MetricStore extends AutoCloseable {
               .bootstrapServers(bootstrapServer)
               .config(
                   ConsumerConfigs.AUTO_OFFSET_RESET_CONFIG,
-                  ConsumerConfigs.AUTO_OFFSET_RESET_EARLIEST)
+                  ConsumerConfigs.AUTO_OFFSET_RESET_LATEST)
               .keyDeserializer(Deserializer.INTEGER)
               .valueDeserializer(Deserializer.BEAN_OBJECT)
               .build();
