@@ -39,12 +39,12 @@ public class ClusterInfoSensor implements MetricSensor {
 
   @Override
   public List<? extends HasBeanObject> fetch(BeanObjectClient client, ClusterBean bean) {
-      List<HasBeanObject> clusterIdHBO = List.of();
-      try {
-          clusterIdHBO = List.of(ServerMetrics.KafkaServer.CLUSTER_ID.fetch(client));
-      }catch (NoSuchElementException ignore){
-          // It returns a list of hasBeanObjects do not throw when any one failed
-      }
+    List<HasBeanObject> clusterIdHBO = List.of();
+    try {
+      clusterIdHBO = List.of(ServerMetrics.KafkaServer.CLUSTER_ID.fetch(client));
+    } catch (NoSuchElementException ignore) {
+      // It returns a list of hasBeanObjects do not throw when any one failed
+    }
     return Stream.of(
             clusterIdHBO,
             LogMetrics.Log.SIZE.fetch(client),
