@@ -56,7 +56,7 @@ public class CostAwareAssignor extends Assignor {
         (clusterBean) ->
             costFunction.partitionCost(clusterInfo, clusterBean).value().values().stream()
                 .noneMatch(v -> Double.isNaN(v)),
-        shuffleTime);
+        maxRetryTime);
 
     var clusterBean = metricStore.clusterBean();
     var partitionCost = costFunction.partitionCost(clusterInfo, clusterBean);
