@@ -19,6 +19,7 @@ package org.astraea.common.cost.utils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.astraea.common.admin.Broker;
@@ -38,8 +39,14 @@ public class ClusterInfoSensor implements MetricSensor {
 
   @Override
   public List<? extends HasBeanObject> fetch(BeanObjectClient client, ClusterBean bean) {
+      List<HasBeanObject> clusterIdHBO = List.of();
+      try {
+          clusterIdHBO = List.of(ServerMetrics.KafkaServer.CLUSTER_ID.fetch(client));
+      }catch (NoSuchElementException ignore){
+          // It returns a list of hasBeanObjects do not throw when any one failed
+      }
     return Stream.of(
-            List.of(ServerMetrics.KafkaServer.CLUSTER_ID.fetch(client)),
+            clusterIdHBO,
             LogMetrics.Log.SIZE.fetch(client),
             ClusterMetrics.Partition.REPLICAS_COUNT.fetch(client))
         .flatMap(Collection::stream)
